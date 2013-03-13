@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="registereddynamicaspect" nsURI="org.eclipse.jwt.sample.registereddynamicaspect"
+    nsPrefix="registereddynamicaspect">
+  <eClassifiers xsi:type="ecore:EClass" name="ACMConnector" eSuperTypes="org.eclipse.jwt.conf#//AspectInstance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="acmref" eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//AccessControlModel"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RoleConnector" eSuperTypes="org.eclipse.jwt.conf#//AspectInstance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roleref" eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//Role"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Log" eSuperTypes="org.eclipse.jwt.conf#//AspectInstance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="permissions" upperBound="-1"
+        eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//Permission"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InsertNodes" eSuperTypes="org.eclipse.jwt.conf#//AspectInstance">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="forknode" eType="ecore:EClass org.eclipse.jwt/processes#//ForkNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="joinnode" eType="ecore:EClass org.eclipse.jwt/processes#//JoinNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="ecore:EClass org.eclipse.jwt/processes#//Activity"/>
+  </eClassifiers>
+</ecore:EPackage>

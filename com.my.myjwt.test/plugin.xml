@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.jwt.we.testmenu"
+         name="org.eclipse.jwt.we.testmenu"
+         point="org.eclipse.jwt.we.menu">
+      <action
+            class="com.my.myjwttest.MyAction1"
+            description="TestMenu1 description"
+            forceText="false"
+            name="TestMenu1"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+   </extension>
+
+</plugin>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id: plugin.xml,v 1.1 2008-12-05 19:14:34 mdutoo Exp $
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.dynamic_package">
+      <resource
+            uri="org.eclipse.jwt.sample.registereddynamicaspect"
+            location="model/registereddynamicaspect.ecore"/>
+   </extension>
+
+   <extension
+         id="org.eclipse.jwt.we.conf.sample.registereddynamicaspect"
+         name="Sample Registered Dynamic Aspect"
+         point="org.eclipse.jwt.we.conf.model.conf">
+      <conf
+            file="conf/registereddynamicaspect.conf">
+      </conf>
+   </extension>
+
+</plugin>
