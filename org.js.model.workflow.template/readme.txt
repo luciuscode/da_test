@@ -23,7 +23,6 @@ org.eclipse.we.conf.we
 2) load resource -> browse registered packages -> org.eclipse.jwt.conf & org.eclipse.jwt/processes
 3) the root class should be have the "AspectInstance" as parent class
 
-ecore file example : template.ecore
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="template" nsURI="org.js.model.workflow.template" nsPrefix="template">
@@ -31,7 +30,6 @@ xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="template" nsURI="org.j
 <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="ecore:EClass platform:/plugin/org.eclipse.jwt.meta/src/org/eclipse/jwt/meta/ecore/JWTMetaModel.ecore#//processes/Action"/>
 </eClassifiers>
 </ecore:EPackage>
-
 
 4. create the generate model file and generate the codes
 -> maybe bugs after generating: in the *.java files we need to change "import org.eclipse.jwt.we.conf..." to "org.eclipse.jwt.we.conf.model..."
