@@ -14,6 +14,7 @@
    </extension>
    <extension
          id="jwt.conf.conf"
+         name="workflow template aspect"
          point="org.eclipse.jwt.we.conf.model.conf">
       <conf
             file="conf/template.conf">
