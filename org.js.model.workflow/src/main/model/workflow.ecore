@@ -2,14 +2,14 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="workflow" nsURI="org.js.model.workflow" nsPrefix="workflow">
   <eClassifiers xsi:type="ecore:EClass" name="ACMConnector" eSuperTypes="platform:/plugin/org.eclipse.jwt.we.conf.model/model/ConfMetaModel.ecore#//AspectInstance">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="acmref" eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//AccessControlModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="acmref" eType="ecore:EClass ../../../../org.js.model.rbac/src/main/model/rbac.ecore#//AccessControlModel"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RoleConnector" eSuperTypes="platform:/plugin/org.eclipse.jwt.we.conf.model/model/ConfMetaModel.ecore#//AspectInstance">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="roleref" eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//Role"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roleref" eType="ecore:EClass ../../../../org.js.model.rbac/src/main/model/rbac.ecore#//Role"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Log" eSuperTypes="platform:/plugin/org.eclipse.jwt.we.conf.model/model/ConfMetaModel.ecore#//AspectInstance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="permissions" upperBound="-1"
-        eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//Permission"/>
+        eType="ecore:EClass ../../../../org.js.model.rbac/src/main/model/rbac.ecore#//Permission"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InsertNodes">
     <eStructuralFeatures xsi:type="ecore:EReference" name="joinnode" eType="ecore:EClass platform:/plugin/org.eclipse.jwt.meta/src/org/eclipse/jwt/meta/ecore/JWTMetaModel.ecore#//processes/JoinNode"/>
@@ -24,7 +24,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//StateEnum"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConfSequence" eSuperTypes="platform:/plugin/org.eclipse.jwt.we.conf.model/model/ConfMetaModel.ecore#//AspectInstance">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="role" upperBound="-1" eType="ecore:EClass ../../org.js.model.rbac/src/main/model/rbac.ecore#//Role"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="role" upperBound="-1" eType="ecore:EClass ../../../../org.js.model.rbac/src/main/model/rbac.ecore#//Role"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="StateEnum">
     <eLiterals name="INACTIVE" literal="INACTIVE"/>

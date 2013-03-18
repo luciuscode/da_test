@@ -10,7 +10,7 @@
       <package
             uri="org.js.model.workflow"
             class="org.js.model.workflow.WorkflowPackage"
-            genModel="model/workflow.genmodel"/>
+            genModel="src/main/model/workflow.genmodel"/>
    </extension>
    <extension
          id="org.js.model.workflow"
