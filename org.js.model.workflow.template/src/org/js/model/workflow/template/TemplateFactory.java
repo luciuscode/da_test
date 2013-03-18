@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.jwt.conf.template;
+package org.js.model.workflow.template;
 
 import org.eclipse.emf.ecore.EFactory;
 
@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see org.eclipse.jwt.conf.template.TemplatePackage
+ * @see org.js.model.workflow.template.TemplatePackage
  * @generated
  */
 public interface TemplateFactory extends EFactory {
@@ -19,7 +19,7 @@ public interface TemplateFactory extends EFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	TemplateFactory eINSTANCE = org.eclipse.jwt.conf.template.impl.TemplateFactoryImpl.init();
+	TemplateFactory eINSTANCE = org.js.model.workflow.template.impl.TemplateFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Template</em>'.

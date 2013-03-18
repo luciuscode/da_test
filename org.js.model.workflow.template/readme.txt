@@ -18,19 +18,20 @@ org.eclipse.we.conf.we
 2. set the plugin.xml 
 -> dependencies: add plugins of "org.eclipse.jwt.we.conf.model" & "org.eclipse.jwt.meta"
 
-3. create emf empty project (e.g., org.eclipse.jwt.conf.template)
+3. create emf empty project (e.g., org.js.model.workflow.template)
 1) create your customer ecore file (e.g., template.ecore)
 2) load resource -> browse registered packages -> org.eclipse.jwt.conf & org.eclipse.jwt/processes
 3) the root class should be have the "AspectInstance" as parent class
 
-ecore file example :
+ecore file example : template.ecore
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="template" nsURI="jwt.conf.template" nsPrefix="template">
+xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="template" nsURI="org.js.model.workflow.template" nsPrefix="template">
 <eClassifiers xsi:type="ecore:EClass" name="Template" eSuperTypes="platform:/plugin/org.eclipse.jwt.we.conf.model/model/ConfMetaModel.ecore#//AspectInstance">
 <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="ecore:EClass platform:/plugin/org.eclipse.jwt.meta/src/org/eclipse/jwt/meta/ecore/JWTMetaModel.ecore#//processes/Action"/>
 </eClassifiers>
 </ecore:EPackage>
+
 
 4. create the generate model file and generate the codes
 -> maybe bugs after generating: in the *.java files we need to change "import org.eclipse.jwt.we.conf..." to "org.eclipse.jwt.we.conf.model..."
@@ -45,15 +46,15 @@ to "import org.eclipse.jwt.we.conf.model.AspectInstance;"
 2) create *.conf file (new -> java workflow tooling -> new aspect configuration model)
 3) add the profile and aspect
 
-conf file example:
+conf file example: template.conf
 <?xml version="1.0" encoding="UTF-8"?>
 <conf:ConfModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:conf="org.eclipse.jwt.conf" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
-  <profiles name="jwt.template.profile">
-    <aspects id="jwt.template.aspect" autocreated="false" multiple="false">
-      <aspectInstanceEType xsi:type="ecore:EClass" href="jwt.conf.template#//Template"/>
-      <targetModelElements href="org.eclipse.jwt/processes#//Action"/>
-    </aspects>
-  </profiles>
+<profiles name="org.js.model.workflow.template.profile">
+<aspects id="org.js.model.workflow.template.aspect" autocreated="false" multiple="false">
+<aspectInstanceEType xsi:type="ecore:EClass" href="org.js.model.workflow.template#//Template"/>
+<targetModelElements href="org.eclipse.jwt/processes#//Action"/>
+</aspects>
+</profiles>
 </conf:ConfModel>
 
 7. 	run the eclipse app. with the project and the required plugin.

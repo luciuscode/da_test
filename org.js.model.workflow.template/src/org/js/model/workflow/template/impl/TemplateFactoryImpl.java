@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.jwt.conf.template.impl;
+package org.js.model.workflow.template.impl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
-import org.eclipse.jwt.conf.template.*;
+import org.js.model.workflow.template.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +27,7 @@ public class TemplateFactoryImpl extends EFactoryImpl implements TemplateFactory
 	 */
 	public static TemplateFactory init() {
 		try {
-			TemplateFactory theTemplateFactory = (TemplateFactory)EPackage.Registry.INSTANCE.getEFactory("jwt.conf.template"); 
+			TemplateFactory theTemplateFactory = (TemplateFactory)EPackage.Registry.INSTANCE.getEFactory("org.js.model.workflow.template"); 
 			if (theTemplateFactory != null) {
 				return theTemplateFactory;
 			}

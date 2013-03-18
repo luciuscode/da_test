@@ -7,9 +7,9 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.jwt.conf.template,
- org.eclipse.jwt.conf.template.impl,
- org.eclipse.jwt.conf.template.util
+Export-Package: org.js.model.workflow.template,
+ org.js.model.workflow.template.impl,
+ org.js.model.workflow.template.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.jwt.we.conf.model;bundle-version="1.2.0";visibility:=reexport,

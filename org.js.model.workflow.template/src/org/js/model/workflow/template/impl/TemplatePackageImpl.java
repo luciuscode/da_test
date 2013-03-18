@@ -1,16 +1,12 @@
 /**
  */
-package org.eclipse.jwt.conf.template.impl;
+package org.js.model.workflow.template.impl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
-import org.eclipse.jwt.conf.template.Template;
-import org.eclipse.jwt.conf.template.TemplateFactory;
-import org.eclipse.jwt.conf.template.TemplatePackage;
 
 import org.eclipse.jwt.meta.model.application.ApplicationPackage;
 
@@ -29,6 +25,10 @@ import org.eclipse.jwt.meta.model.primitiveTypes.PrimitiveTypesPackage;
 import org.eclipse.jwt.meta.model.processes.ProcessesPackage;
 
 import org.eclipse.jwt.we.conf.model.ConfPackage;
+
+import org.js.model.workflow.template.Template;
+import org.js.model.workflow.template.TemplateFactory;
+import org.js.model.workflow.template.TemplatePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -55,7 +55,7 @@ public class TemplatePackageImpl extends EPackageImpl implements TemplatePackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see org.eclipse.jwt.conf.template.TemplatePackage#eNS_URI
+	 * @see org.js.model.workflow.template.TemplatePackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */

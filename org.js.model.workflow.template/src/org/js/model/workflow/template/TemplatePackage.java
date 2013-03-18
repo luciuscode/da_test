@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.jwt.conf.template;
+package org.js.model.workflow.template;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -19,7 +19,7 @@ import org.eclipse.jwt.we.conf.model.ConfPackage;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see org.eclipse.jwt.conf.template.TemplateFactory
+ * @see org.js.model.workflow.template.TemplateFactory
  * @model kind="package"
  * @generated
  */
@@ -38,7 +38,7 @@ public interface TemplatePackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "jwt.conf.template";
+	String eNS_URI = "org.js.model.workflow.template";
 
 	/**
 	 * The package namespace name.
@@ -54,14 +54,14 @@ public interface TemplatePackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	TemplatePackage eINSTANCE = org.eclipse.jwt.conf.template.impl.TemplatePackageImpl.init();
+	TemplatePackage eINSTANCE = org.js.model.workflow.template.impl.TemplatePackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.jwt.conf.template.impl.TemplateImpl <em>Template</em>}' class.
+	 * The meta object id for the '{@link org.js.model.workflow.template.impl.TemplateImpl <em>Template</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.jwt.conf.template.impl.TemplateImpl
-	 * @see org.eclipse.jwt.conf.template.impl.TemplatePackageImpl#getTemplate()
+	 * @see org.js.model.workflow.template.impl.TemplateImpl
+	 * @see org.js.model.workflow.template.impl.TemplatePackageImpl#getTemplate()
 	 * @generated
 	 */
 	int TEMPLATE = 0;
@@ -104,21 +104,21 @@ public interface TemplatePackage extends EPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.jwt.conf.template.Template <em>Template</em>}'.
+	 * Returns the meta object for class '{@link org.js.model.workflow.template.Template <em>Template</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Template</em>'.
-	 * @see org.eclipse.jwt.conf.template.Template
+	 * @see org.js.model.workflow.template.Template
 	 * @generated
 	 */
 	EClass getTemplate();
 
 	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.jwt.conf.template.Template#getAction <em>Action</em>}'.
+	 * Returns the meta object for the reference '{@link org.js.model.workflow.template.Template#getAction <em>Action</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Action</em>'.
-	 * @see org.eclipse.jwt.conf.template.Template#getAction()
+	 * @see org.js.model.workflow.template.Template#getAction()
 	 * @see #getTemplate()
 	 * @generated
 	 */
@@ -147,11 +147,11 @@ public interface TemplatePackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.jwt.conf.template.impl.TemplateImpl <em>Template</em>}' class.
+		 * The meta object literal for the '{@link org.js.model.workflow.template.impl.TemplateImpl <em>Template</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.jwt.conf.template.impl.TemplateImpl
-		 * @see org.eclipse.jwt.conf.template.impl.TemplatePackageImpl#getTemplate()
+		 * @see org.js.model.workflow.template.impl.TemplateImpl
+		 * @see org.js.model.workflow.template.impl.TemplatePackageImpl#getTemplate()
 		 * @generated
 		 */
 		EClass TEMPLATE = eINSTANCE.getTemplate();

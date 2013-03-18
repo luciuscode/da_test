@@ -1,15 +1,15 @@
 /**
  */
-package org.eclipse.jwt.conf.template.util;
+package org.js.model.workflow.template.util;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 
-import org.eclipse.jwt.conf.template.*;
-
 import org.eclipse.jwt.we.conf.model.AspectInstance;
+
+import org.js.model.workflow.template.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -21,7 +21,7 @@ import org.eclipse.jwt.we.conf.model.AspectInstance;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see org.eclipse.jwt.conf.template.TemplatePackage
+ * @see org.js.model.workflow.template.TemplatePackage
  * @generated
  */
 public class TemplateSwitch<T> extends Switch<T> {

@@ -8,12 +8,12 @@
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="jwt.conf.template"
-            class="org.eclipse.jwt.conf.template.TemplatePackage"
+            uri="org.js.model.workflow.template"
+            class="org.js.model.workflow.template.TemplatePackage"
             genModel="model/template.genmodel"/>
    </extension>
    <extension
-         id="jwt.conf.conf"
+         id="org.js.model.workflow.template"
          name="workflow template aspect"
          point="org.eclipse.jwt.we.conf.model.conf">
       <conf

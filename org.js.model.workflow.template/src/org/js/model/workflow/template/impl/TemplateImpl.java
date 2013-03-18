@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.jwt.conf.template.impl;
+package org.js.model.workflow.template.impl;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -9,12 +9,12 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.jwt.conf.template.Template;
-import org.eclipse.jwt.conf.template.TemplatePackage;
-
 import org.eclipse.jwt.meta.model.processes.Action;
 
 import org.eclipse.jwt.we.conf.model.impl.AspectInstanceImpl;
+
+import org.js.model.workflow.template.Template;
+import org.js.model.workflow.template.TemplatePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +23,7 @@ import org.eclipse.jwt.we.conf.model.impl.AspectInstanceImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.jwt.conf.template.impl.TemplateImpl#getAction <em>Action</em>}</li>
+ *   <li>{@link org.js.model.workflow.template.impl.TemplateImpl#getAction <em>Action</em>}</li>
  * </ul>
  * </p>
  *
