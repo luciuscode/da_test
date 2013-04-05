@@ -1,19 +1,13 @@
 package com.my.myjwttest;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.jwt.meta.model.core.GraphicalElement;
 import org.eclipse.jwt.meta.model.core.Model;
 import org.eclipse.jwt.meta.model.core.PackageableElement;
 import org.eclipse.jwt.meta.model.events.Event;
@@ -31,22 +25,22 @@ import org.eclipse.jwt.meta.model.processes.JoinNode;
 import org.eclipse.jwt.meta.model.processes.ProcessesFactory;
 
 public class WorkflowUtil {
-	
-//	public static ArrayList<GraphicalElement> modelEleContainer = new ArrayList<GraphicalElement>();
 
 	public static final String WORKFLOW_EXTENSION = "workflow";
 	public static final String WORKFLOW_VIEW_EXTENSION = "workflow_view";
 	public static final String WORKFLOW_CONF_EXTENSION = "workflow_conf";
+	public static final String INITIAL_NODE_NAME = "InitialNode";
+	public static final String FINAL_NODE_NAME = "FinalNode";
 
 	public static ProcessesFactory processFactory = ProcessesFactory.eINSTANCE;
 	public static EventsFactory eventsFactory = EventsFactory.eINSTANCE;
-	public static OrganisationsFactory orgFactory = OrganisationsFactory.eINSTANCE;
+	public static OrganisationsFactory organisatoinFactory = OrganisationsFactory.eINSTANCE;
 
 	/**
 	 * get the workflow view resource for the given workflow resource.
 	 * 
 	 * @param workflowResource
-	 * @return
+	 * @return workflow view resource
 	 */
 	public static Resource getWorkflowViewReousrce(Resource workflowResource) {
 		URI workflowViewUri = workflowResource.getURI().trimFileExtension()
@@ -59,7 +53,7 @@ public class WorkflowUtil {
 	 * get the workflow configuration resource for the given workflow resource.
 	 * 
 	 * @param workflowResource
-	 * @return
+	 * @return workflow configration resource
 	 */
 	public static Resource getWorkflowConfReousrce(Resource workflowResource) {
 		URI workflowConfUri = workflowResource.getURI().trimFileExtension()
@@ -78,16 +72,86 @@ public class WorkflowUtil {
 		return action;
 	}
 
+	public static Event addEvent(Activity activity, String name) {
+		Event event = eventsFactory.createEvent();
+		if (name == null || name.equals("")) {
+			name = "Event" + String.valueOf(getEventList(activity).size());
+		}
+		event.setName(name);
+		activity.getNodes().add(event);
+		return event;
+	}
+	
+	/**
+	 * remove activity node (event, action, initial/final node)
+	 * @param activity
+	 * @param name
+	 * @return
+	 */
+	public static ActivityNode removeActNode(Activity activity, String name){
+		ActivityNode actNode = (ActivityNode)getActivityNode(activity, name);
+		if(actNode !=null){
+			activity.getNodes().remove(actNode);
+		}
+		return actNode;
+	}
+	
+	public static Role addRole(Model workflowModel, String name) {
+		Role role = organisatoinFactory.createRole();
+		if (name == null || name.equals("")) {
+			name = "Role" + String.valueOf(getRoleList(workflowModel).size());
+		}
+		role.setName(name);
+		workflowModel.getElements().add(role);
+		return role;
+	}
+
+	public static Role removeRole(Model workflowModel, String name) {
+		Role role =getRole(workflowModel, name);
+		if (role!=null) {
+			workflowModel.getElements().remove(role);
+		}
+		return role;
+	}
+
+	/**
+	 * if there is no initial node in the activity, an initial node will be added.
+	 * @param activity
+	 * @return
+	 */
 	public static InitialNode addInitialNode(Activity activity) {
-		InitialNode initNode = processFactory.createInitialNode();
-		activity.getNodes().add(initNode);
+		InitialNode initNode = (InitialNode) getActivityNode(activity,
+				INITIAL_NODE_NAME);
+		if (initNode == null) {
+			initNode = processFactory.createInitialNode();
+			initNode.setName(INITIAL_NODE_NAME);
+			activity.getNodes().add(initNode);
+		}
 		return initNode;
 	}
 
+	public static InitialNode getInitNode(Activity activity) {
+		return (InitialNode) getActivityNode(activity, INITIAL_NODE_NAME);
+	}
+
+	/**
+	 * if there is no final node in the activity, an final node will be added.
+	 * @param activity
+	 * @return
+	 */
 	public static FinalNode addFinalNode(Activity activity) {
-		FinalNode finalNode = processFactory.createFinalNode();
-		activity.getNodes().add(finalNode);
+		FinalNode finalNode = (FinalNode) getActivityNode(activity,
+				FINAL_NODE_NAME);
+		if (finalNode == null) {
+			finalNode = processFactory.createFinalNode();
+			finalNode.setName(FINAL_NODE_NAME);
+			activity.getNodes().add(finalNode);
+		}
 		return finalNode;
+	}
+
+	public static FinalNode getFinalNode(Activity activity) {
+		return (FinalNode) getActivityNode(activity, FINAL_NODE_NAME);
 	}
 
 	public static ForkNode addForkNode(Activity activity) {
@@ -102,15 +166,6 @@ public class WorkflowUtil {
 		return joinNode;
 	}
 
-	public static Event addEvent(Activity activity, String name){
-		Event event = eventsFactory.createEvent();
-		if (name == null || name.equals("")) {
-			name = "Event" + String.valueOf(getEventList(activity).size());
-		}
-		event.setName(name);
-		activity.getNodes().add(event);
-		return event;
-	}
 	public static ActivityEdge addEdge(Activity activity, ActivityNode source,
 			ActivityNode target) {
 		ActivityEdge actEdge = processFactory.createActivityEdge();
@@ -120,27 +175,37 @@ public class WorkflowUtil {
 		return actEdge;
 	}
 
-	public static Role addRole(Model workflowModel, Action action, String name) {
-		Role role =orgFactory.createRole();
-		if (name == null || name.equals("")) {
-			name = "Role" + String.valueOf(getRoleList(workflowModel).size());
+	public static ActivityEdge getEdge(Activity activity, ActivityNode source,
+			ActivityNode target) {
+		ActivityEdge result=null;
+		for (ActivityEdge actiEdge : activity.getEdges()) {
+			if (actiEdge.getSource().equals(source)
+					&& actiEdge.getTarget().equals(target)) {
+				return actiEdge;
+			}
 		}
-		role.setName(name);
-//		action.setPerformedBy(role);
-		workflowModel.getElements().add(role);
-		
-		return role;
+		return result;
 	}
-	/**
-	 * get the action list from the activity model.
-	 * 
-	 * @param activity
-	 * @return
-	 */
+
+	public static ActivityEdge removeEdge(Activity activity,
+			ActivityNode source, ActivityNode target) {
+		ActivityEdge edgeToRemove = null;
+		for (ActivityEdge actiEdge : activity.getEdges()) {
+			if (actiEdge.getSource().equals(source)
+					&& actiEdge.getTarget().equals(target)) {
+				edgeToRemove= actiEdge;
+			}
+		}
+		activity.getEdges().remove(edgeToRemove);
+		source.getOut().remove(edgeToRemove);
+		target.getIn().remove(edgeToRemove);
+		return edgeToRemove;
+	}
+
 	public static ArrayList<Action> getActionList(Activity activity) {
-		EList actNodes = activity.getNodes();
+		EList<ActivityNode> actNodes = activity.getNodes();
 		ArrayList<Action> result = new ArrayList<Action>();
-		Iterator<Action> it = actNodes.iterator();
+		Iterator<ActivityNode> it = actNodes.iterator();
 		while (it.hasNext()) {
 			ActivityNode actNode = it.next();
 			if (actNode instanceof Action) {
@@ -150,7 +215,7 @@ public class WorkflowUtil {
 		return result;
 	}
 
-	public static ArrayList<Role> getRoleList(Model workflowModel){
+	public static ArrayList<Role> getRoleList(Model workflowModel) {
 		EList<PackageableElement> pEleList = workflowModel.getElements();
 		ArrayList<Role> result = new ArrayList<Role>();
 		Iterator<PackageableElement> it = pEleList.iterator();
@@ -162,8 +227,8 @@ public class WorkflowUtil {
 		}
 		return result;
 	}
-	
-	public static ArrayList<Event> getEventList(Activity activity){
+
+	public static ArrayList<Event> getEventList(Activity activity) {
 		EList<ActivityNode> actNodes = activity.getNodes();
 		ArrayList<Event> result = new ArrayList<Event>();
 		Iterator<ActivityNode> it = actNodes.iterator();
@@ -175,7 +240,7 @@ public class WorkflowUtil {
 		}
 		return result;
 	}
-	
+
 	public static Resource getResource(URI uri) {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		return resourceSet.getResource(uri, true);
@@ -188,4 +253,77 @@ public class WorkflowUtil {
 		return resourceSet.getResource(uri, true);
 	}
 
+	/**
+	 * return role if workflow model contains the role with given name
+	 * 
+	 * @param activity
+	 * @param name
+	 * @return
+	 */
+	public static Role getRole(Model workflowModel, String name) {
+		for (PackageableElement role : workflowModel.getElements()) {
+			if (role.getName().equals(name)) {
+				return (Role)role;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * return node if activity contains the node (e.g., action, join/fork node)
+	 * with given name
+	 * 
+	 * @param activity
+	 * @param name
+	 * @return
+	 */
+	public static ActivityNode getActivityNode(Activity activity,
+			String name) {
+		for (ActivityNode actNode : activity.getNodes()) {
+			String tempName=actNode.getName();
+			if (tempName!=null&&tempName.equals(name))
+				return actNode;
+		}
+		return null;
+	}
+	
+	public static boolean comparatorForRole(Role role1, Role role2){
+		return role1.getName().equals(role2.getName());
+	} 
+
+	public static boolean comparatorForActNode(ActivityNode actNode1,ActivityNode actNode2){
+		return actNode1.getName().equals(actNode2.getName());
+	}
+	
+	/**
+	 * check if the activity node name is contained
+	 * @param activity
+	 * @param name
+	 * @return
+	 */
+	public static boolean containsActNodeName(Activity activity, String name){
+		for(ActivityNode actNode:activity.getNodes()){
+			if(actNode.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+//	public static Event removeEvent(Activity activity, String name) {
+//	Event event = (Event)getActivityNode(activity, name);
+//	if(event !=null){
+//		activity.getNodes().remove(event);
+//	}
+//	return event;
+//}
+	
+//	public static Action removeAction(Activity activity, String name) {
+//	Action action = (Action)getActivityNode(activity, name);
+//	if(action!=null){
+//		activity.getNodes().remove(action);
+//		action=null;
+//	}
+//	return action;
+//}
 }

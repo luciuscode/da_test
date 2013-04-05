@@ -6,10 +6,64 @@
          name="org.eclipse.jwt.we.testmenu"
          point="org.eclipse.jwt.we.menu">
       <action
-            class="com.my.myjwttest.MyAction1"
-            description="TestMenu1 description"
+            class="com.my.myjwttest.ImportModelAction"
+            description="initial the configuration workflow"
             forceText="false"
-            name="TestMenu1"
+            name="import models"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.InitialAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="Initial"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.AddProviderAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="add provider"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.AddTenantAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="add tenant"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.AddUserAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="add user"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.CleanAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="clean"
+            requiresOpenEditor="true"
+            showInMenu="true"
+            showInToolbar="true">
+      </action>
+      <action
+            class="com.my.myjwttest.TestAction"
+            description="initial the configuration workflow"
+            forceText="false"
+            name="test"
             requiresOpenEditor="true"
             showInMenu="true"
             showInToolbar="true">
