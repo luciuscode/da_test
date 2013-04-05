@@ -1,0 +1,21 @@
+TOOLING
+1. change description (combination of primitive changes)
+2. user input ui (adding new stakeholder)
+3. simulation process
+4. add "id" for actNode
+5. action name is for showing state
+6. event is used as final fluss node
+ 
+4.1 double click listener
+4.2 configuration ui (dialog with selection: tree view/table view)
+4.3 configuration changes handler/validation (book: hand book for graph rewriting, graph transformation nutshell)
+4.4 visual state (color for the task)
+
+5. write interface for the method of change description
+6. graph transformation for change description 
+7. one role-> multiple task
+9. comparator for instance in conf model and jwt model
+
+*layout
+
+Model Mapping
