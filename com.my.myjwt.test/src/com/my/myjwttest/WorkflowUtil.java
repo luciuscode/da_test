@@ -3,6 +3,8 @@ package com.my.myjwttest;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -23,14 +25,18 @@ import org.eclipse.jwt.meta.model.processes.ForkNode;
 import org.eclipse.jwt.meta.model.processes.InitialNode;
 import org.eclipse.jwt.meta.model.processes.JoinNode;
 import org.eclipse.jwt.meta.model.processes.ProcessesFactory;
+import org.eclipse.jwt.we.conf.model.aspects.AspectManager;
+import org.js.model.workflow.StateEnum;
 
 public class WorkflowUtil {
 
 	public static final String WORKFLOW_EXTENSION = "workflow";
 	public static final String WORKFLOW_VIEW_EXTENSION = "workflow_view";
 	public static final String WORKFLOW_CONF_EXTENSION = "workflow_conf";
-	public static final String INITIAL_NODE_NAME = "InitialNode";
-	public static final String FINAL_NODE_NAME = "FinalNode";
+	public static final String ACTION_WAITING = "Waiting";
+	public static final String ACTION_COMPELTED = "Completed";
+	// public static final String INITIAL_NODE_NAME = "InitialNode";
+	// public static final String FINAL_NODE_NAME = "FinalNode";
 
 	public static ProcessesFactory processFactory = ProcessesFactory.eINSTANCE;
 	public static EventsFactory eventsFactory = EventsFactory.eINSTANCE;
@@ -62,11 +68,15 @@ public class WorkflowUtil {
 		return resourceSet.getResource(workflowConfUri, true);
 	}
 
+	/**
+	 * we use name as the action state value for visualization
+	 * 
+	 * @param activity
+	 * @param name
+	 * @return
+	 */
 	public static Action addAction(Activity activity, String name) {
 		Action action = processFactory.createAction();
-		if (name == null || name.equals("")) {
-			name = "Task" + String.valueOf(getActionList(activity).size());
-		}
 		action.setName(name);
 		activity.getNodes().add(action);
 		return action;
@@ -81,21 +91,30 @@ public class WorkflowUtil {
 		activity.getNodes().add(event);
 		return event;
 	}
-	
+
 	/**
 	 * remove activity node (event, action, initial/final node)
+	 * 
 	 * @param activity
 	 * @param name
 	 * @return
 	 */
-	public static ActivityNode removeActNode(Activity activity, String name){
-		ActivityNode actNode = (ActivityNode)getActivityNode(activity, name);
-		if(actNode !=null){
+	public static ActivityNode removeActivityNode(Activity activity, String name) {
+		ActivityNode actNode = (ActivityNode) getActivityNode(activity, name);
+		if (actNode != null) {
 			activity.getNodes().remove(actNode);
 		}
 		return actNode;
 	}
-	
+
+	public static ActivityNode removeActivityNode(Activity activity,
+			ActivityNode actNode) {
+		if (activity.getNodes().contains(actNode)) {
+			activity.getNodes().remove(actNode);
+		}
+		return actNode;
+	}
+
 	public static Role addRole(Model workflowModel, String name) {
 		Role role = organisatoinFactory.createRole();
 		if (name == null || name.equals("")) {
@@ -107,52 +126,42 @@ public class WorkflowUtil {
 	}
 
 	public static Role removeRole(Model workflowModel, String name) {
-		Role role =getRole(workflowModel, name);
-		if (role!=null) {
+		Role role = getRole(workflowModel, name);
+		if (role != null) {
 			workflowModel.getElements().remove(role);
 		}
 		return role;
 	}
 
-	/**
-	 * if there is no initial node in the activity, an initial node will be added.
-	 * @param activity
-	 * @return
-	 */
-	public static InitialNode addInitialNode(Activity activity) {
-		InitialNode initNode = (InitialNode) getActivityNode(activity,
-				INITIAL_NODE_NAME);
-		if (initNode == null) {
-			initNode = processFactory.createInitialNode();
-			initNode.setName(INITIAL_NODE_NAME);
-			activity.getNodes().add(initNode);
-		}
+	public static InitialNode addInitialNode(Activity activity, String name) {
+		// InitialNode initNode = (InitialNode) getActivityNode(activity,
+		// name);
+		// if (initNode == null) {
+		InitialNode initNode = processFactory.createInitialNode();
+		initNode.setName(name);
+		activity.getNodes().add(initNode);
+		// }
 		return initNode;
 	}
 
-	public static InitialNode getInitNode(Activity activity) {
-		return (InitialNode) getActivityNode(activity, INITIAL_NODE_NAME);
-	}
+	// public static InitialNode getInitNode(Activity activity, String name) {
+	// return (InitialNode) getActivityNode(activity, INITIAL_NODE_NAME);
+	// }
 
-	/**
-	 * if there is no final node in the activity, an final node will be added.
-	 * @param activity
-	 * @return
-	 */
-	public static FinalNode addFinalNode(Activity activity) {
-		FinalNode finalNode = (FinalNode) getActivityNode(activity,
-				FINAL_NODE_NAME);
-		if (finalNode == null) {
-			finalNode = processFactory.createFinalNode();
-			finalNode.setName(FINAL_NODE_NAME);
-			activity.getNodes().add(finalNode);
-		}
+	public static FinalNode addFinalNode(Activity activity, String name) {
+		// FinalNode finalNode = (FinalNode) getActivityNode(activity,
+		// FINAL_NODE_NAME);
+		// if (finalNode == null) {
+		FinalNode finalNode = processFactory.createFinalNode();
+		finalNode.setName(name);
+		activity.getNodes().add(finalNode);
+		// }
 		return finalNode;
 	}
 
-	public static FinalNode getFinalNode(Activity activity) {
-		return (FinalNode) getActivityNode(activity, FINAL_NODE_NAME);
-	}
+	// public static FinalNode getFinalNode(Activity activity) {
+	// return (FinalNode) getActivityNode(activity, FINAL_NODE_NAME);
+	// }
 
 	public static ForkNode addForkNode(Activity activity) {
 		ForkNode forkNode = processFactory.createForkNode();
@@ -177,7 +186,7 @@ public class WorkflowUtil {
 
 	public static ActivityEdge getEdge(Activity activity, ActivityNode source,
 			ActivityNode target) {
-		ActivityEdge result=null;
+		ActivityEdge result = null;
 		for (ActivityEdge actiEdge : activity.getEdges()) {
 			if (actiEdge.getSource().equals(source)
 					&& actiEdge.getTarget().equals(target)) {
@@ -193,7 +202,7 @@ public class WorkflowUtil {
 		for (ActivityEdge actiEdge : activity.getEdges()) {
 			if (actiEdge.getSource().equals(source)
 					&& actiEdge.getTarget().equals(target)) {
-				edgeToRemove= actiEdge;
+				edgeToRemove = actiEdge;
 			}
 		}
 		activity.getEdges().remove(edgeToRemove);
@@ -263,67 +272,95 @@ public class WorkflowUtil {
 	public static Role getRole(Model workflowModel, String name) {
 		for (PackageableElement role : workflowModel.getElements()) {
 			if (role.getName().equals(name)) {
-				return (Role)role;
+				return (Role) role;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * return node if activity contains the node (e.g., action, join/fork node)
-	 * with given name
+	 * return node if activity contains the node with given name
 	 * 
 	 * @param activity
 	 * @param name
 	 * @return
 	 */
-	public static ActivityNode getActivityNode(Activity activity,
-			String name) {
+	public static ActivityNode getActivityNode(Activity activity, String name) {
 		for (ActivityNode actNode : activity.getNodes()) {
-			String tempName=actNode.getName();
-			if (tempName!=null&&tempName.equals(name))
+			String tempName = "";
+			if (actNode instanceof Action) {
+				tempName = getActionName((Action) actNode);
+			} else {
+				tempName = actNode.getName();
+			}
+			if (tempName.equals(name))
 				return actNode;
 		}
 		return null;
 	}
-	
-	public static boolean comparatorForRole(Role role1, Role role2){
-		return role1.getName().equals(role2.getName());
-	} 
 
-	public static boolean comparatorForActNode(ActivityNode actNode1,ActivityNode actNode2){
+	/**
+	 * action name is sum of role name and action state value, so this method
+	 * helps us to get the real name of the action
+	 * 
+	 * @param action
+	 * @return action name
+	 */
+	public static String getActionName(Action action) {
+		String tempName = action.getName();
+		int length = tempName.length();
+		int nameLength = length;
+		if (tempName.contains(StateEnum.INACTIVE.toString())) {
+			nameLength = length - StateEnum.INACTIVE.toString().length() - 4;
+		} else if (tempName.contains(StateEnum.ENABLE.toString())) {
+			nameLength = length - StateEnum.ENABLE.toString().length() - 4;
+		} else if (tempName.contains(StateEnum.RUNNING.toString())) {
+			nameLength = length - StateEnum.RUNNING.toString().length() - 4;
+		} else if (tempName.contains(StateEnum.COMPLETED.toString())) {
+			nameLength = length - StateEnum.COMPLETED.toString().length() - 4;
+		}
+		return tempName.substring(0, nameLength);
+	}
+
+	public static boolean comparatorForRole(Role role1, Role role2) {
+		return role1.getName().equals(role2.getName());
+	}
+
+	public static boolean comparatorForActNode(ActivityNode actNode1,
+			ActivityNode actNode2) {
 		return actNode1.getName().equals(actNode2.getName());
 	}
-	
+
 	/**
 	 * check if the activity node name is contained
+	 * 
 	 * @param activity
 	 * @param name
 	 * @return
 	 */
-	public static boolean containsActNodeName(Activity activity, String name){
-		for(ActivityNode actNode:activity.getNodes()){
-			if(actNode.getName().equals(name)){
+	public static boolean containsActNodeName(Activity activity, String name) {
+		for (ActivityNode actNode : activity.getNodes()) {
+			if (actNode.getName().equals(name)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-//	public static Event removeEvent(Activity activity, String name) {
-//	Event event = (Event)getActivityNode(activity, name);
-//	if(event !=null){
-//		activity.getNodes().remove(event);
-//	}
-//	return event;
-//}
-	
-//	public static Action removeAction(Activity activity, String name) {
-//	Action action = (Action)getActivityNode(activity, name);
-//	if(action!=null){
-//		activity.getNodes().remove(action);
-//		action=null;
-//	}
-//	return action;
-//}
+
+	// public static Event removeEvent(Activity activity, String name) {
+	// Event event = (Event)getActivityNode(activity, name);
+	// if(event !=null){
+	// activity.getNodes().remove(event);
+	// }
+	// return event;
+	// }
+
+	// public static Action removeAction(Activity activity, String name) {
+	// Action action = (Action)getActivityNode(activity, name);
+	// if(action!=null){
+	// activity.getNodes().remove(action);
+	// action=null;
+	// }
+	// return action;
+	// }
 }

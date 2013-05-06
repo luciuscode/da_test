@@ -2,12 +2,14 @@ TOOLING
 1. change description (combination of primitive changes)
 2. user input ui (adding new stakeholder)
 3. simulation process
-4. add "id" for actNode
-5. action name is for showing state
+4. add icon method as action state
 6. event is used as final fluss node
- 
-4.1 double click listener
-4.2 configuration ui (dialog with selection: tree view/table view)
+7. clean(first clean the aspect reference for target)
+8. add new role in the rbac file and then refernce the role from rbac to workflow model file
+9. programmaticaly add profile
+10 bugs(editor not closed, reopen eclipse, error)
+4.1 double click listener+ configuration ui (dialog with selection: tree view/table view), 
+or use property sheet to show the configuration ui
 4.3 configuration changes handler/validation (book: hand book for graph rewriting, graph transformation nutshell)
 4.4 visual state (color for the task)
 
@@ -19,3 +21,9 @@ TOOLING
 *layout
 
 Model Mapping
+
+question
+1. rbactext file: add new role?
+
+notice
+1. the action name = role name + action state (we want to show the action state) 

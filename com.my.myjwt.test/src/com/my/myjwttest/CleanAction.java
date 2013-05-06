@@ -17,6 +17,7 @@ import org.eclipse.jwt.meta.model.processes.Activity;
 import org.eclipse.jwt.meta.model.processes.ActivityNode;
 import org.eclipse.jwt.meta.model.processes.InitialNode;
 import org.eclipse.jwt.meta.model.processes.ProcessesFactory;
+import org.eclipse.jwt.we.conf.model.AspectInstance;
 import org.eclipse.jwt.we.conf.model.ConfModel;
 import org.eclipse.jwt.we.editors.WEEditor;
 import org.eclipse.jwt.we.editors.actions.external.WEExternalAction;
@@ -26,7 +27,6 @@ import org.eclipse.jwt.we.model.view.ViewFactory;
 public class CleanAction extends MyAction {
 
 	public CleanAction() {
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -43,6 +43,12 @@ public class CleanAction extends MyAction {
 	 * clean the worklfow.
 	 */
 	public void clean() {
+		// remove all aspects
+		for(AspectInstance aspectInstance:confModel.getAspectInstances()){
+			aspectInstance.setTargetModelElement(null);
+		}
+		confModel.getAspectInstances().clear();
+		
 		// remove the activity element
 		activity.getNodes().clear();
 		activity.getEdges().clear();
@@ -54,7 +60,7 @@ public class CleanAction extends MyAction {
 		diagram.getReferenceEdges().clear();
 		diagram.getReferences().clear();
 		diagram.getLayoutData().clear();
-		// confModel.getAspectInstances().clear();
+
 		// confModel.getProfiles().clear();
 	}
 

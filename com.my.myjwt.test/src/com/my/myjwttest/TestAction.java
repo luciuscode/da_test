@@ -25,6 +25,7 @@ import org.eclipse.jwt.meta.model.organisations.OrganisationsFactory;
 import org.eclipse.jwt.meta.model.organisations.Role;
 import org.eclipse.jwt.meta.model.processes.Action;
 import org.eclipse.jwt.meta.model.processes.Activity;
+import org.eclipse.jwt.meta.model.processes.ActivityEdge;
 import org.eclipse.jwt.meta.model.processes.ActivityNode;
 import org.eclipse.jwt.meta.model.processes.FinalNode;
 import org.eclipse.jwt.meta.model.processes.ForkNode;
@@ -45,35 +46,27 @@ import org.eclipse.jwt.we.model.view.Diagram;
 import org.eclipse.jwt.we.model.view.LayoutData;
 import org.eclipse.jwt.we.model.view.Reference;
 import org.eclipse.jwt.we.model.view.ViewFactory;
+import org.js.model.rbac.AccessControlModel;
 import org.js.model.rbac.Permission;
+import org.js.model.rbac.RBACService;
 import org.js.model.rbac.RbacFactory;
+import org.js.model.rbac.impl.RbacFactoryImpl;
+import org.js.model.workflow.ACMConnector;
 import org.js.model.workflow.Log;
+import org.js.model.workflow.RoleConnector;
 import org.js.model.workflow.State;
 import org.js.model.workflow.StateEnum;
 import org.js.model.workflow.WorkflowFactory;
 
 public class TestAction extends MyAction {
 
-	WEEditor workflowEditor;
-	Model workflowModel;
-	Activity activity;
-	Diagram diagram;
-	ConfModel confModel;
-	Resource workflowResource;
-	Resource workflowViewResource;
-	Resource workflowConfResource;
-	EditingDomain editingDomain;
-
-	ProcessesFactory processFactory = ProcessesFactory.eINSTANCE;
-	ViewFactory viewFactory = ViewFactory.eINSTANCE;
-	EventsFactory eventsFactory = EventsFactory.eINSTANCE;
-	OrganisationsFactory orgFactory = OrganisationsFactory.eINSTANCE;
-
 	String testrole1 = "role1";
 	String testrole2 = "role2";
 	String testaction1 = "action1";
 	String testaction2 = "action2";
 	String testevent = "event1";
+	String testInitial = "initialNode";
+	String testFinal = "finalNode";
 
 	public TestAction() {
 	}
@@ -87,70 +80,41 @@ public class TestAction extends MyAction {
 	public void run() {
 
 		initialRes();
-		clean();
-		 addWorkflowELement();
-		// removeWorkflowElement();
-		testConfElement();
-		// removeConfElement();
+		// clean();
+		// addWorkflowELement();
+		// testWorkflowElement();
+		// testConfElement();
+		testChangePrimitive();
 		// initial();
 		// simpleInitial();
 		// complexInitial();
+		// test();
 		save();
 		refresh();
 		//
 		// printAll();
 	}
 
+	public void test() {
+		System.out.println(AspectManager.INSTANCE
+				.getActivatedProfiles(workflowModel));
+		
+		InitialNode root = processFactory.createInitialNode();
+		Action action = processFactory.createAction();
+		FinalNode finalNode = processFactory.createFinalNode();
+		ActivityEdge actEdge1 =processFactory.createActivityEdge();
+		actEdge1.setSource(root);
+		actEdge1.setTarget(action);
+		ActivityEdge actEdge2 =processFactory.createActivityEdge();
+		actEdge2.setSource(action);
+		actEdge2.setTarget(finalNode);
+	}
 
 	public void complexInitial() {
-		InitialNode iniNode = addInitialNode(100, 200);
-		Action action1 = addAction(activity, diagram, null, 200, 200);
-		addEdge(iniNode, action1);
-		ForkNode forkNode1 = addForkNode(300, 200);
-		addEdge(action1, forkNode1);
-		Action action2 = addAction(activity, diagram, null, 400, 200);
-		addEdge(forkNode1, action2);
-		Action action3 = addAction(activity, diagram, null, 400, 400);
-		addEdge(forkNode1, action3);
-		addRole(null, 200, 50, action2, "provider1");
-		addRole(null, 400, 50, action3, "provider2");
-		Action action4 = addAction(activity, diagram, null, 500, 200);
-		Action action5 = addAction(activity, diagram, null, 500, 400);
-		addEdge(action2, action4);
-		addEdge(action3, action5);
-		JoinNode joinNode1 = addJoinNode(600, 200);
-		addEdge(action4, joinNode1);
-		addEdge(action5, joinNode1);
-		Event event1 = addEvent(700, 200, null);
-		addEdge(joinNode1, event1);
-		FinalNode finalNode = addFinalNode(800, 200);
-		addEdge(event1, finalNode);
 
 	}
 
 	public void simpleInitial() {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	/**
-	 * clean the worklfow.
-	 */
-	public void clean() {
-		// remove the activity element
-		activity.getNodes().clear();
-		activity.getEdges().clear();
-		// remove the roles
-		workflowModel.getElements().removeAll(
-				workflowModel.getElements().subList(1,
-						workflowModel.getElements().size()));
-		// remove the layout data
-		diagram.getReferenceEdges().clear();
-		diagram.getReferences().clear();
-		diagram.getLayoutData().clear();
-//		confModel.getAspectInstances().clear();
-//		 confModel.getProfiles().clear();
 	}
 
 	/**
@@ -250,9 +214,9 @@ public class TestAction extends MyAction {
 		WorkflowViewUtil.setNodeLayout(diagram, aciNode, 200, 200);
 
 		// remove action
-		aciNode = WorkflowUtil.removeActNode(activity, testaction1);
+		aciNode = WorkflowUtil.removeActivityNode(activity, testaction1);
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
-		aciNode = WorkflowUtil.removeActNode(activity, testaction2);
+		aciNode = WorkflowUtil.removeActivityNode(activity, testaction2);
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
 
 		// add event
@@ -262,31 +226,27 @@ public class TestAction extends MyAction {
 
 		// remove event
 		WorkflowUtil.addEvent(activity, testevent);
-		aciNode = WorkflowUtil.removeActNode(activity, testevent);
+		aciNode = WorkflowUtil.removeActivityNode(activity, testevent);
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
 
 		// add initial node
-		WorkflowUtil.addInitialNode(activity);
-		aciNode = WorkflowUtil.getActivityNode(activity,
-				WorkflowUtil.INITIAL_NODE_NAME);
+		WorkflowUtil.addInitialNode(activity, "initial");
+		aciNode = WorkflowUtil.getActivityNode(activity, "initial");
 		WorkflowViewUtil.setNodeLayout(diagram, aciNode, 200, 200);
 
 		// remove initial node
-		WorkflowUtil.addInitialNode(activity);
-		aciNode = WorkflowUtil.removeActNode(activity,
-				WorkflowUtil.INITIAL_NODE_NAME);
+		WorkflowUtil.addInitialNode(activity, "initial");
+		aciNode = WorkflowUtil.removeActivityNode(activity, "initial");
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
 
 		// add final node
-		WorkflowUtil.addFinalNode(activity);
-		aciNode = WorkflowUtil.getActivityNode(activity,
-				WorkflowUtil.FINAL_NODE_NAME);
+		WorkflowUtil.addFinalNode(activity, "final");
+		aciNode = WorkflowUtil.getActivityNode(activity, "final");
 		WorkflowViewUtil.setNodeLayout(diagram, aciNode, 200, 200);
 
 		// remove final node
-		WorkflowUtil.addFinalNode(activity);
-		aciNode = WorkflowUtil.removeActNode(activity,
-				WorkflowUtil.FINAL_NODE_NAME);
+		WorkflowUtil.addFinalNode(activity, "final");
+		aciNode = WorkflowUtil.removeActivityNode(activity, "final");
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
 
 		// TODO: remove join/fork node
@@ -308,9 +268,9 @@ public class TestAction extends MyAction {
 		WorkflowUtil.removeEdge(activity,
 				WorkflowUtil.getActivityNode(activity, testaction1),
 				WorkflowUtil.getActivityNode(activity, testevent));
-		aciNode = WorkflowUtil.removeActNode(activity, testaction1);
+		aciNode = WorkflowUtil.removeActivityNode(activity, testaction1);
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
-		aciNode = WorkflowUtil.removeActNode(activity, testevent);
+		aciNode = WorkflowUtil.removeActivityNode(activity, testevent);
 		WorkflowViewUtil.removeNodeLayout(diagram, aciNode);
 
 		// add role
@@ -339,13 +299,13 @@ public class TestAction extends MyAction {
 		WorkflowViewUtil.setRoleLayout(diagram, activity,
 				WorkflowUtil.getRole(workflowModel, testrole2), 100, 100);
 		WorkflowViewUtil.setReferenceEdge(diagram, activity,
-				(Action) WorkflowUtil.getActivityNode(activity, testaction1),
-				WorkflowUtil.getRole(workflowModel, testrole1));
+				WorkflowUtil.getRole(workflowModel, testrole1),
+				(Action) WorkflowUtil.getActivityNode(activity, testaction1));
 		WorkflowViewUtil.setReferenceEdge(diagram, activity,
-				(Action) WorkflowUtil.getActivityNode(activity, testaction2),
-				WorkflowUtil.getRole(workflowModel, testrole1));
+				WorkflowUtil.getRole(workflowModel, testrole1),
+				(Action) WorkflowUtil.getActivityNode(activity, testaction2));
 
-		// remove reference edge
+		// remove role reference edge
 		WorkflowViewUtil.removeReferenceEdge(diagram,
 				WorkflowUtil.getRole(workflowModel, testrole1),
 				(Action) WorkflowUtil.getActivityNode(activity, testaction1));
@@ -355,26 +315,99 @@ public class TestAction extends MyAction {
 	}
 
 	public void testConfElement() {
-		ActivityNode tempAct = null;
-		
-//		 add state aspect
+		// initial
+		ActivityNode aciNode = null;
+		Role tempRole = null;
+		RBACService rbacService = new RBACService();
+
+		// load the rbac model
+		AccessControlModel acm = loadRbacModel();
+
+		// add action
 		WorkflowUtil.addAction(activity, testaction1);
-		tempAct = WorkflowUtil.getActivityNode(activity, testaction1);
-		WorkflowViewUtil.setNodeLayout(diagram, tempAct, 100, 100);
-		WorkflowConfUtil.addAspectInstance(tempAct,
+		aciNode = WorkflowUtil.getActivityNode(activity, testaction1);
+		WorkflowViewUtil.setNodeLayout(diagram, aciNode, 100, 100);
+
+		// add role
+		WorkflowUtil.addRole(workflowModel, testrole1);
+		WorkflowViewUtil.setRoleLayout(diagram, activity,
+				WorkflowUtil.getRole(workflowModel, testrole1), 200, 200);
+
+		// add role aspect
+		tempRole = WorkflowUtil.getRole(workflowModel, testrole1);
+		WorkflowConfUtil.addAspectInstance(tempRole,
+				WorkflowConfUtil.ROLE_ASPECT);
+		RoleConnector roleConnector = (RoleConnector) WorkflowConfUtil
+				.getAspectInstance(tempRole, WorkflowConfUtil.ROLE_ASPECT);
+		org.js.model.rbac.Role result = RbacFactoryImpl.eINSTANCE.createRole();
+		result.setId(testrole1);
+		result.setName(testrole1);
+		acm.getRoles().add(result);
+		try {
+			acm.eResource().save(null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		WorkflowConfUtil.setRoleRef(roleConnector, result);
+
+		// remove role aspect
+		tempRole = WorkflowUtil.getRole(workflowModel, testrole1);
+		WorkflowConfUtil.removeAspectInstance(tempRole,
+				WorkflowConfUtil.ROLE_ASPECT);
+
+		// add log aspect
+		aciNode = WorkflowUtil.getActivityNode(activity, testaction1);
+		WorkflowConfUtil
+				.addAspectInstance(aciNode, WorkflowConfUtil.LOG_ASPECT);
+		Log log = (Log) WorkflowConfUtil.getAspectInstance(aciNode,
+				WorkflowConfUtil.LOG_ASPECT);
+		WorkflowConfUtil.addPermission(log,
+				rbacService.getAllModelPermissions(acm).get(0));
+
+		// remove log aspect
+		aciNode = WorkflowUtil.getActivityNode(activity, testaction1);
+		WorkflowConfUtil.removeAspectInstance(aciNode,
+				WorkflowConfUtil.LOG_ASPECT);
+
+		// add state aspect
+		aciNode = WorkflowUtil.getActivityNode(activity, testaction1);
+		WorkflowConfUtil.addAspectInstance(aciNode,
 				WorkflowConfUtil.STATE_ASPECT);
-		State state = (State) WorkflowConfUtil.getAspectInstance(tempAct,
+		State state = (State) WorkflowConfUtil.getAspectInstance(aciNode,
 				WorkflowConfUtil.STATE_ASPECT);
 		WorkflowConfUtil.setState(state, StateEnum.RUNNING);
-		
+
 		// remove state aspect
-		tempAct = WorkflowUtil.getActivityNode(activity, testaction1);
-		WorkflowConfUtil.removeAspectInstance(tempAct, WorkflowConfUtil.STATE_ASPECT);
+		aciNode = WorkflowUtil.getActivityNode(activity, testaction1);
+		WorkflowConfUtil.removeAspectInstance(aciNode,
+				WorkflowConfUtil.STATE_ASPECT);
+
+		// remove role
+		// WorkflowViewUtil.removeRoleLayout(diagram,
+		// WorkflowUtil.getRole(workflowModel, testrole1));
+		// WorkflowUtil.removeRole(workflowModel, testrole1);
 	}
 
-	public void removeConfElement() {
-		// TODO Auto-generated method stub
+	public void testChangePrimitive() {
+		RBACService rbacService = new RBACService();
+		// load a rbac model
+		AccessControlModel acm = loadRbacModel();
 
+		InitialNode initialNode = ChangePrimitive.addInitialNode(activity,
+				diagram, testInitial, 100, 100);
+		ChangePrimitive.addRole(workflowModel, activity, diagram,
+				acm.getRoles().get(0), testrole1, 100, 200);
+		ChangePrimitive.addEdge(activity, initialNode,
+				WorkflowUtil.getActivityNode(activity, testrole1));
+//		
+//		 ChangePrimitive.removeRole(workflowModel, activity, diagram,
+//		 testrole1);
+//		 ChangePrimitive.removeEdge(activity, source, target);
+//		 ChangePrimitive.addFinalNode(activity, diagram, testFinal, 50, 100);
+//		ChangePrimitive
+//				.addFinalFlowNode(activity, diagram, testFinal, 100, 100);
+//		ChangePrimitive.addForkNode(activity, diagram, 150, 100);
+//		ChangePrimitive.addJoinNode(activity, diagram, 200, 100);
 	}
 
 	public void testSimpleInitial() {
@@ -384,14 +417,14 @@ public class TestAction extends MyAction {
 		// test add layout
 
 		// InitialNode iniNode = addInitialNode(100, 200);
-		Action action1 = addAction(activity, diagram, "task1", 200, 200);
+		// Action action1 = addAction(activity, diagram, "task1", 200, 200);
 		// addEdge(iniNode, action1);
 		// Action action2 = addAction(300, 200, null);
 		// addEdge(action1, action2);
 		// FinalNode finalNode = addFinalNode(400, 200);
 		// addEdge(action2, finalNode);
 
-		addRole(null, 200, 50, action1, "provider1");
+		// addRole(null, 200, 50, action1, "provider1");
 		// addRole(null, 300, 50, action2, "provider2");
 	}
 
@@ -405,54 +438,10 @@ public class TestAction extends MyAction {
 			workflowModel.eResource().save(options);
 			// workflowModel.eResource().save(null);
 			diagram.eResource().save(options);
-//			confModel.eResource().save(options);
+			// confModel.eResource().save(options);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void testjwt() {
-		Action action = addAction(activity, diagram, "test", 100, 200);
-		activity.getNodes().add(action);
-
-		EObject modelEle = activity.getNodes().get(0);
-
-		Aspect aspect = AspectManager.INSTANCE.getAspect(modelEle,
-				"org.js.model.workflow.template.aspect");
-		System.out.println(aspect);
-		AspectManager.INSTANCE.createAndAddAspectInstance(aspect, activity
-				.getNodes().get(0));
-		Log ai = (Log) AspectManager.INSTANCE.getAspectInstance(modelEle,
-				aspect);
-		// ai.get
-	}
-
-	public void testadd() {
-		Action action = addAction(activity, diagram, "test", 100, 200);
-		activity.getNodes().add(action);
-
-		EObject modelEle = activity.getNodes().get(0);
-
-		Aspect aspect = AspectManager.INSTANCE.getAspect(modelEle,
-				WorkflowConfUtil.STATE_ASPECT);
-		System.out.println(aspect);
-		AspectManager.INSTANCE.createAndAddAspectInstance(aspect, activity
-				.getNodes().get(0));
-		State ai = (State) AspectManager.INSTANCE.getAspectInstance(modelEle,
-				aspect);
-
-		ai.setState(StateEnum.INACTIVE);
-	}
-
-	public void testdelete() {
-		EObject modelEle = activity.getNodes().get(0);
-		Aspect aspect = AspectManager.INSTANCE.getAspect(modelEle,
-				WorkflowConfUtil.LOG_ASPECT);
-		AspectManager.INSTANCE.getAspectInstance(modelEle, aspect);
-		// AspectManager.INSTANCE.getConfModel(modelEle).getAspectInstances()
-		// .remove(ai);
-		activity.getNodes().remove(modelEle);
-		diagram.getLayoutData().remove(0);
 	}
 
 	public void testConf() {
@@ -580,61 +569,18 @@ public class TestAction extends MyAction {
 		// .getAspects().get(0).getAspectInstanceEType());
 	}
 
+	public AccessControlModel loadRbacModel() {
+		ImportModelAction ima = new ImportModelAction();
+		ima.run();
+
+		ACMConnector acmconnector = (ACMConnector) WorkflowConfUtil
+				.getAspectInstance(workflowModel, WorkflowConfUtil.ACM_ASPECT);
+		return (AccessControlModel) acmconnector.getAcmref();
+	}
+
 	// TODO: set the layout for the workflow after changes
 	public void layout() {
 
-	}
-
-	public Action addAction(Activity activity, Diagram diagram, String name,
-			int coorX, int coorY) {
-		Action action = WorkflowUtil.addAction(activity, name);
-		WorkflowViewUtil.setNodeLayout(diagram, action, coorX, coorY);
-		return action;
-	}
-
-	public InitialNode addInitialNode(int coorX, int coorY) {
-		InitialNode initialNode = WorkflowUtil.addInitialNode(activity);
-		WorkflowViewUtil.setNodeLayout(diagram, initialNode, coorX, coorY);
-		return initialNode;
-	}
-
-	public FinalNode addFinalNode(int coorX, int coorY) {
-		FinalNode finalNode = WorkflowUtil.addFinalNode(activity);
-		WorkflowViewUtil.setNodeLayout(diagram, finalNode, coorX, coorY);
-		return finalNode;
-	}
-
-	public ForkNode addForkNode(int coorX, int coorY) {
-		ForkNode forkNode = WorkflowUtil.addForkNode(activity);
-		WorkflowViewUtil.setNodeLayout(diagram, forkNode, coorX, coorY);
-		return forkNode;
-	}
-
-	public JoinNode addJoinNode(int coorX, int coorY) {
-		JoinNode joinNode = WorkflowUtil.addJoinNode(activity);
-		WorkflowViewUtil.setNodeLayout(diagram, joinNode, coorX, coorY);
-		return joinNode;
-
-	}
-
-	public void addEdge(ActivityNode source, ActivityNode target) {
-		WorkflowUtil.addEdge(activity, source, target);
-	}
-
-	public Event addEvent(int coorX, int coorY, String name) {
-		Event event = WorkflowUtil.addEvent(activity, name);
-		WorkflowViewUtil.setNodeLayout(diagram, event, coorX, coorY);
-		return event;
-	}
-
-	public Role addRole(org.js.model.rbac.Role rbacRole, int coorX, int coorY,
-			Action action, String name) {
-		Role role = WorkflowUtil.addRole(workflowModel, name);
-		Reference reference = WorkflowViewUtil.setRoleLayout(diagram, activity,
-				role, coorX, coorY);
-		WorkflowViewUtil.setReferenceEdge(diagram, activity, action, role);
-		// WorkflowConfModelUtil.addRoleAspect(confModel, role, rbacRole);
-		return role;
 	}
 
 }

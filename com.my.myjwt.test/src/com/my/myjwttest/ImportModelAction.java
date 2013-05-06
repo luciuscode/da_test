@@ -32,12 +32,10 @@ public class ImportModelAction extends MyAction {
 	private Resource rbacRes;
 
 	public ImportModelAction() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public ImageDescriptor getImage() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -49,16 +47,18 @@ public class ImportModelAction extends MyAction {
 		refresh();
 
 	}
-/**
- * select the model file and import it if it is a rbac model file.
- */
+
+	/**
+	 * select the model file and import it if it is a rbac model file.
+	 */
 	public void loadModel() {
 		shell = workflowEditor.getSite().getShell();
 		resourceSet = new ResourceSetImpl();
 		ResourceDialog resourceDiaglog = new ResourceDialog(shell,
 				"Load Model", SWT.OPEN);
 		int state = resourceDiaglog.open();
-
+		// TODO: if the workflow model already includes a acm model, update the
+		// acm model and contained elements
 		if (state != CANCEL) {
 			if (resourceDiaglog.getURIText() != "") {
 				URI uri = resourceDiaglog.getURIs().get(0);
@@ -75,8 +75,7 @@ public class ImportModelAction extends MyAction {
 					loadACModel();
 				} else {
 					String info = "Please selected rbac model file with the file extension "
-							+ WorkflowConfUtil.ACM_FILE_EXTENSION
-							+ ".";
+							+ WorkflowConfUtil.ACM_FILE_EXTENSION + ".";
 
 					MessageDialog.openInformation(getActiveShell(), "Warning",
 							info);

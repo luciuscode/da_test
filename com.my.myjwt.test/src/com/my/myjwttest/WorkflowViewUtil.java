@@ -156,12 +156,14 @@ public class WorkflowViewUtil {
 	}
 
 	/**
+	 * 
 	 * remove the reference edge for the given action
 	 * @param diagram
 	 * @param role
 	 * @param action
+	 * @return
 	 */
-	public static void removeReferenceEdge(Diagram diagram, Role role, Action action) {
+	public static ReferenceEdge removeReferenceEdge(Diagram diagram, Role role, Action action) {
 		EList<ReferenceEdge> refEdgeList = getReference(diagram, role)
 				.getReferenceEdges();
 		ReferenceEdge edgeToRemove=null;
@@ -173,6 +175,7 @@ public class WorkflowViewUtil {
 		diagram.getReferenceEdges().remove(edgeToRemove);
 		refEdgeList.remove(edgeToRemove);
 		action.setPerformedBy(null);
+		return edgeToRemove;
 	}
 
 	public static void removeRoleLayout(Diagram diagram, Role role) {
@@ -193,16 +196,16 @@ public class WorkflowViewUtil {
 			diagram.getLayoutData().remove(layoutdata);
 		}
 	}
-
 	/**
 	 * set the reference edge between role and action
-	 * 
 	 * @param diagram
 	 * @param activity
+	 * @param role
 	 * @param action
+	 * @return
 	 */
-	public static void setReferenceEdge(Diagram diagram, Activity activity,
-			Action action, Role role) {
+	public static ReferenceEdge setReferenceEdge(Diagram diagram, Activity activity, Role role,
+			Action action) {
 		Reference reference = getReference(diagram, role);
 		ReferenceEdge referenceEdge = viewFactory.createReferenceEdge();
 		referenceEdge.setReference(reference);
@@ -212,5 +215,6 @@ public class WorkflowViewUtil {
 		diagram.getReferenceEdges().add(referenceEdge);
 		reference.getReferenceEdges().add(referenceEdge);
 		referenceEdge.setReference(reference);
+		return referenceEdge;
 	}
 }

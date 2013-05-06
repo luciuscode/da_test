@@ -11,8 +11,11 @@ import org.eclipse.jwt.meta.model.processes.ForkNode;
 import org.eclipse.jwt.meta.model.processes.JoinNode;
 import org.eclipse.jwt.we.conf.model.Aspect;
 import org.eclipse.jwt.we.conf.model.AspectInstance;
+import org.eclipse.jwt.we.conf.model.ConfFactory;
 import org.eclipse.jwt.we.conf.model.ConfModel;
+import org.eclipse.jwt.we.conf.model.Profile;
 import org.eclipse.jwt.we.conf.model.aspects.AspectManager;
+import org.eclipse.jwt.we.conf.model.aspects.factory.AspectFactory;
 import org.js.model.rbac.AccessControlModel;
 import org.js.model.rbac.Permission;
 import org.js.model.rbac.Role;
@@ -28,7 +31,10 @@ import org.js.model.workflow.WorkflowFactory;
 public class WorkflowConfUtil {
 
 	public static WorkflowFactory workflowFactory = WorkflowFactory.eINSTANCE;
-	public static final String ACM_FILE_EXTENSION = "rbactext";
+	public static ConfFactory confFactory = ConfFactory.eINSTANCE;
+	public static final String ACM_FILE_EXTENSION = "rbac";
+	public static final String WORKFLOW_PROFILE_NAME = "org.js.model.workflow.profile";
+	
 
 	public static final String ACM_ASPECT = "org.js.model.workflow.acmaspect";
 	public static final String ROLE_ASPECT = "org.js.model.workflow.roleaspect";
@@ -78,19 +84,38 @@ public class WorkflowConfUtil {
 			Permission permission) {
 		log.getPermissions().add(permission);
 	}
-//	public static void addInsertNodes(InsertNodesContainer inCon,
-//			Permission permission) {
-//		log.getPermissions().add(permission);
-//	}
+	public static void removePermission(Log log,
+			Permission permission){
+		log.getPermissions().remove(permission);
+	}
+	public static void removePermissions(Log log,
+			List<Permission> permissionList) {
+		log.getPermissions().removeAll(permissionList);
+	}
+
 	public static void setState(State state,
 			StateEnum stateEnum) {
 		state.setState(stateEnum);
 	}
-	public static void setConfSequence(ConfSequence confSeq,
-			List<Role> roles) {
-		confSeq.getRole().addAll(roles);
+	
+	public static boolean containsProfile(Model workflowModel, String profileName){
+		List<Profile> activeProfiles =AspectManager.INSTANCE.getActivatedProfiles(workflowModel);
+		for(Profile profile:activeProfiles){
+			if(profile.getName().equals(profileName)){
+				return true;
+			}
+		}
+		return false;
 	}
-
+	//TODO: ensure if we need the aspects of insertnode and confseq 
+//	public static void setConfSequence(ConfSequence confSeq,
+//			List<Role> roles) {
+//		confSeq.getRole().addAll(roles);
+//	}
+//	public static void addInsertNodes(InsertNodesContainer inCon,
+//	Permission permission) {
+//log.getPermissions().add(permission);
+//}
 	//
 	// public static RoleAspect addRoleAspect(ConfModel confModel, Role role) {
 	// RoleAspect roleAsp = staAspFactory.createRoleAspect();
@@ -134,7 +159,6 @@ public class WorkflowConfUtil {
 	// roleasp.setRoleref(rbacRole);
 	// }
 	//
-	// // TODO:
 	// public static void refInsertNodes(InsertNodesAspect insertAsp,
 	// InsertNodes insertNodes, Action action, ForkNode forkNode,
 	// JoinNode joinNode) {
